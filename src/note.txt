@@ -1,0 +1,15 @@
+<div>Tools = {tools.name}</div>
+      <button onClick={() => tools.name += 1}>Change name</button>
+      {/* <button onClick={() => tools.changeName()}>Change Name</button>
+      <br />
+      <button onClick={() => tools.changeAge()}>Change Age</button> */}
+----------
+copy({
+        targets: [
+          {
+            src: path.resolve(__dirname, "src/types/**/*"),
+            dest: path.resolve(__dirname, "dist/types"),
+          },
+        ],
+        hook: "buildEnd", // ✅ runs after build and before bundle close
+      }),
