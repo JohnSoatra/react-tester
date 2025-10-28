@@ -13,3 +13,610 @@ copy({
         ],
         hook: "buildEnd", // ✅ runs after build and before bundle close
       }),
+------------
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
+import createRoutes from './routes';
+import { BrowserRouter, Route, RouterProvider, Routes, useNavigate } from 'react-router';
+import TestPage from './pages';
+import { registerTools } from 'react-use-tools';
+import ErrorPage from './pages/error';
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+
+// const router = createRoutes();
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<TestPage />} />
+      <Route path="/*" element={<ErrorPage />} />
+    </Routes>
+  )
+}
+
+function B({ children }: { children: any }) {
+  const [name, setName] = useState('John Soatra');
+  const [age, setAge] = useState(0);
+  const [job, setJob] = useState({ title: 'test' });
+  const navigate = useNavigate();
+
+  registerTools({
+    name,
+    setName: () => {
+      setName(n => n + '1');
+    },
+    get age() {
+      return age;
+    },
+    set age(v) {
+      setAge(v);
+    },
+    navigate,
+    job,
+    setJob(title) {
+      setJob({ title });
+    },
+  });
+
+  return <>{children}</>
+}
+
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <B>
+        <App />
+      </B>
+    </BrowserRouter>
+    {/* <RouterProvider router={router} /> */}
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+-----
+function NameWatcher() {
+  tools.watch(t => t.name);
+
+  // console.log('re-render name');
+
+  return (
+    <div>
+      <p>name = {tools.name}</p>
+      <button onClick={() => tools.setName()}>Change</button>
+    </div>
+  );
+}
+
+function AgeWatcher() {
+  tools.watch(t => t.age, {
+    callback(value) {
+      console.log('change', value);
+    },
+  })
+  const [name, setName] = useState('name ');
+
+  return (
+    <div>
+      <p>some name = {name}</p>
+      <p>age = {tools.age}</p>
+      <button onClick={() => tools.age += 1}>Change</button>
+      <button onClick={() => {tools.age += 1; setName(a => a + 'a'); }}>Change name</button>
+    </div>
+  );
+}
+---------------
+{/* <NameWatcher /> */}
+      {/* <AgeWatcher /> */}
+      {/* <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher />
+      <AgeWatcher /> */}
+      {/* <button onClick={() => tools.navigate({ pathname: '/error' })} >to Error</button> */}
+--------
+import { useEffect, useMemo, useRef, useState } from "react";
+
+type FunProps<T extends Record<string, any>> = {
+  [K in keyof T as `fun${Capitalize<string & K>}`]: () => T[K]
+}
+
+function capitalize(string: string) {
+  return string[0].toUpperCase() + string.slice(1);
+}
+function useFun<T extends Record<string, any>>(props: T) {
+  return useMemo(() => {
+    const obj = {} as FunProps<T>;
+
+    for (let key in props) {
+      obj[`fun${capitalize(key)}` as keyof typeof obj] = function () {
+        return props[key];
+      }
+    }
+  }, [props]);
+}
+
+function useAccept(props: { name: string, age: number }) {
+  const propsRef = useRef(props);
+  const funs = useFun(props);
+
+  function print() {
+    // console.log(funRef.current);
+    console.log(propsRef.current);
+  }
+
+  useEffect(() => {
+    // console.log('changes = ', fun, props);
+    // console.log('changes = ', props);
+    // funRef.current = fun;
+    propsRef.current = props;
+  }, [props]);
+
+  return {
+    print
+  }
+}
+
+export default function TestPage() {
+  const [name, setName] = useState('Good boy');
+
+  const { print } = useAccept({
+    // b: () => 3,
+    // name,
+    date: new Date().getTime()
+  });
+
+  return (
+    <div>
+      <button onClick={() => setName(n => n + '1')}>Change name</button>
+      <br />
+      <button onClick={print}>Print</button>
+    </div>
+  );
+}
+--------------
+import { useEffect, useMemo, useRef, useState } from "react";
+
+type FunProps<T extends Record<string, any>> = {
+  [K in keyof T as `fun${Capitalize<string & K>}`]: () => T[K]
+}
+
+function capitalize(string: string) {
+  return string[0].toUpperCase() + string.slice(1);
+}
+function useFun<T extends Record<string, any>>(props: T) {
+  return useMemo(() => {
+    
+  }, [props]);
+}
+
+function useAccept(props: { name: string, age: number }) {
+  const propsRef = useRef(props);
+  const fun = useFun(props);
+
+
+  function print() {
+    // console.log(funRef.current);
+    // console.log(propsRef.current);
+
+    console.log(fun.funAge());
+    console.log(fun.funName);
+  }
+
+  useEffect(() => {
+    // console.log('changes = ', fun, props);
+    // console.log('changes = ', props);
+    // funRef.current = fun;
+    propsRef.current = props;
+  }, [props]);
+
+  return {
+    print
+  }
+}
+
+export default function TestPage() {
+  const [name, setName] = useState('Good boy');
+
+  const { print } = useAccept({
+    name: name,
+    age: new Date().getTime()
+  });
+
+  return (
+    <div>
+      <button onClick={() => setName(n => n + '1')}>Change name</button>
+      <br />
+      <button onClick={print}>Print</button>
+    </div>
+  );
+}
+-----
+const value = (obj as any)[key];
+      console.log('in get', value);
+
+      if (value !== null && typeof value === 'object') {
+        if (Array.isArray(value)) {
+          for (const method of ArrayMethods) {
+            (value as any)[method] = (...args: any[]) => {
+              reRender();
+              return (value as any)[method](...args);
+            };
+          }
+          const proxyList: any[] = [];
+
+          for (const item of value) {
+            if (itemisPlainObject(item)) {
+              proxyList.push(createProxy(item, reRender, cache))
+            } else {
+              proxyList.push(createProxy(item, reRender, cache))
+            }
+          }
+
+          return proxyList;
+        } else if (isPlainObject(value)) {
+          console.log('is plain');
+          return createProxy(value, reRender, cache);
+        }
+      }
+-----------
+// function isPlainObject(value: any) {
+//   return (
+//     typeof value === 'object' &&
+//     value !== null &&
+//     !Array.isArray(value) &&
+//     Object.prototype.toString.call(value) === '[object Object]'
+//   );
+// }
+-------
+import { useEffect, useMemo, useRef, useState } from "react";
+
+function useTest(prop: { show: boolean }) {
+  return useMemo(() => {
+    console.log('in mo');
+    return 3;
+  }, [prop]);
+}
+export default function Tester() {
+  const [c, setC] = useState(0);
+  const a = useTest({
+    show: false
+  });
+
+  return (
+    <div>
+      {/* <p>sdfs {c}</p> */}
+      <button onClick={() => { setC(c => c + 1) }}>change</button>
+      {/* <p>name = {a.p}</p>
+      <button onClick={() => { a.p.push(1) }}>change number</button> */}
+      {/* <br />
+      <button onClick={() => { setC(c => c + 1) }}>Set counter</button> */}
+    </div>
+  )
+}
+------
+// const a = useProps<any[]>([1, 2]);
+  // const [state, setState] = useState(new Proxy([1, 2], {}));
+
+  // useEffect(() => {
+  //   const a = new  Proxy([1, 2], {
+  //     get(target, p) {
+  //       return (target as any)[p];
+  //     },
+  //     set(target, p, newValue) {
+  //       (target as any)[p] = newValue;
+  //       return true;
+  //     },
+  //   });
+
+  //   a.push(1);
+  //   console.log(a);
+  // }, []);
+
+  // console.log('a.p = ', a.p);
+  // console.log(state);
+----
+import { useEffect, useState } from 'react';
+import useProps from 'react-use-props';
+
+const proxyArray = new Proxy([1, 2], {});
+const array = [1, 2];
+
+export default function Tester() {
+  const [_, setTick] = useState(0);
+
+  // console.log(proxyArray);
+
+  return (
+    <div>
+      <p>proxyArray = {proxyArray}</p>
+      <p>array = {array.map(each => {console.log(each); return 2;})}</p>
+      <button onClick={() => { array.push(1); proxyArray.push(1); setTick(t => t + 1); }}>Change</button>
+    </div>
+  )
+}
+------
+import { MUTATION_METHODS } from "../constants";
+
+function mutationFunction(obj: any, key: string) {
+  const list = MUTATION_METHODS.get(obj.constructor);
+
+  if (list) {
+    return list.includes(key);
+  }
+
+  return false;
+}
+export function createProxy({
+  content,
+  reRender,
+  parent = {},
+  contentKey = 'p',
+  _cache = new WeakMap(),
+}: {
+  content: Record<string, any>;
+  reRender: () => void;
+  parent?: Record<string, any>;
+  contentKey?: string | symbol;
+  _cache?: WeakMap<any, any>;
+}) {
+  if (_cache.has(content)) {
+    return _cache.get(content);
+  };
+
+  const proxy = new Proxy(content, {
+    get(target, key, receiver) {
+      let value = Reflect.get(target, key, receiver);
+
+      if (value !== null) {
+        if (typeof value === 'object') {
+          return createProxy({
+            content: value,
+            parent: content,
+            contentKey: key,
+            reRender,
+            _cache
+          });
+        } else if (typeof value === 'function') {
+          if (mutationFunction(target, key as string)) {
+            value = function (...args: any[]) {
+              const result = (target as any)[key](...args);
+              reRender();
+              return result;
+            }
+          } else {
+            value = value.bind(target);
+          }
+        }
+      }
+
+      return value;
+    },
+    set(target, key, value, receiver) {
+      const currentValue = (target as any)[key];
+      const newValue = Reflect.set(target, key, value, receiver);
+
+      if (currentValue !== value) {
+        reRender();
+      };
+
+      return newValue;
+    },
+    deleteProperty(target, key) {
+      const hadKey = Object.prototype.hasOwnProperty.call(target, key);
+      const result = Reflect.deleteProperty(target, key);
+      
+      if (hadKey) {
+        reRender();
+      };
+
+      return result;
+    }
+  });
+
+  _cache.set(content, proxy);
+
+  return proxy;
+}
+------------
+
+type Path = (string | number | symbol)[];
+
+const useReactive = <T extends object>(state: T): T => {
+  const [variable, setVariable] = useState<T>(state);
+
+  const updateState = (path: Path, value: any) => {
+    setVariable(prevState => {
+      // console.log('prev', prevState);
+      const newState = structuredClone(prevState); // Create a deep copy
+      let current: any = newState;
+      // console.log('current', current);
+      for (let i = 0; i < path.length - 1; i++) {
+        current = current[path[i]];
+        console.log('current', JSON.stringify(current));
+      }
+      current[path[path.length - 1]] = value;
+
+      console.log('current', JSON.stringify(current));
+      return newState;
+    });
+  };
+
+  const createHandler = <K extends Record<string, any>>(
+    _target: K,
+    path: Path = []
+  ): ProxyHandler<K> => {
+    // console.log('target = ', _target);
+    // console.log('path = ', path);
+    return {
+      get(target: K, key: string | number | symbol) {
+        const typedKey = key as keyof K;
+        if (typeof target[typedKey] === 'object' && target[typedKey] !== null) {
+          return new Proxy(
+            target[typedKey],
+            createHandler(target[typedKey], [...path, key])
+          );
+        } else {
+          return target[typedKey];
+        }
+      },
+      set(_target: K, key: string | number | symbol, value: any) {
+        console.log('update', [...path, key], value);
+        updateState([...path, key], value);
+        return true;
+      },
+    }
+  };
+
+  console.log('----------');
+
+  return new Proxy<T>(variable, createHandler(variable));
+};
+----
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { createProxy } from './utils';
+
+export type Current<T> = {
+  get current(): T;
+  set current(value: T);
+};
+
+function useCurrent<T>(initial: T): Current<T>;
+function useCurrent<T = undefined>(): Current<T | undefined>;
+function useCurrent<T>(initial?: T): Current<T | undefined> {
+  const [stateCurrent, setStateCurrent] = useState<Current<T | undefined>>();
+  const timeout = useRef<NodeJS.Timeout>(undefined);
+  
+  const reRender = useCallback(() => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
+      setStateCurrent({ ...initialCurrent });
+    }, 10);
+  }, []);
+  
+  const initialCurrent = useMemo(() => createProxy({ current: initial }, reRender), []);
+
+  return stateCurrent ?? initialCurrent;
+}
+
+export default useCurrent;
+---
+new Proxy(initialCurrent, {
+        get(...args) {
+          return Reflect.get(...args);
+        },
+        set(...args) {
+          return Reflect.set(...args);
+        },
+        deleteProperty(...args) {
+          return Reflect.deleteProperty(...args);
+        }
+      })
+---
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { createProxy } from './utils';
+
+export type Current<T> = {
+  get current(): T;
+  set current(value: T);
+};
+
+function useCurrent<T>(initial: T): Current<T>;
+function useCurrent<T = undefined>(): Current<T | undefined>;
+function useCurrent<T>(initial?: T): Current<T | undefined> {
+  const timeout = useRef<NodeJS.Timeout>(undefined);
+  const [state, setState] = useState<Current<T | undefined>>();
+  
+  const reRender = useCallback(() => {
+    clearTimeout(timeout.current);
+    timeout.current = setTimeout(() => {
+      setState(prev => structuredClone(prev));
+    }, 25);
+  }, []);
+  
+  const proxy = useMemo(() => {
+    return createProxy({ current: initial }, reRender);
+  }, [tick]);
+
+  return proxy;
+}
+
+export default useCurrent;
+--------
+// console.log('sdf');
+        // a.current.set(g, 'sdf')
+        // console.log(a.p.push(1));
+        // a.p[0] = 2;
+        // b.p.name += '111';
+        // console.log(b[1]);
+        // (b[1] as any).push(1);
+        // console.log('b[1]', b[1]);
+        // a.name += 'sdf';
+        // a.person.test += 1;
+        // (a as any).newa = 'sdf'
+----
+// 
+import { useEffect } from 'react';
+import useCurrent from 'react-use-current';
+
+// export default useReactive;
+const g = {};
+export default function Tester() {
+  // const a = useReactive({ name: 'sdf', age: 20, person: { test: 20 } });
+  // const b = useReactive([1, [0]]);
+  // const props = useCurrent(new WeakMap([[g, '']]));
+  const b = useCurrent({score: [1, 2, 3], name: '22', job: { year: 250 }});
+
+  useEffect(() => {
+    console.log(b.tick);
+    console.log('change', b);
+  }, [b]);
+
+  return (
+    <div>
+      <p>a = {b.current.score}</p>
+      <button onClick={() => {
+        b.current.score.push(1);
+      }}>change</button>
+    </div>
+  );
+}
+---
+// 
+import { useEffect } from 'react';
+import useCurrent from 'react-use-current';
+
+// export default useReactive;
+const g = {};
+export default function Tester() {
+  // const a = useReactive({ name: 'sdf', age: 20, person: { test: 20 } });
+  // const b = useReactive([1, [0]]);
+  // const props = useCurrent(new WeakMap([[g, '']]));
+  const b = useCurrent({score: [1, 2, 3], name: '22', job: { year: 250 }});
+
+  useEffect(() => {
+    console.log(b.tick);
+    console.log('change', b);
+  }, [b]);
+
+  return (
+    <div>
+      <p>a = {b.current.score}</p>
+      <button onClick={() => {
+        b.current.score.push(1);
+      }}>change</button>
+    </div>
+  );
+}
+

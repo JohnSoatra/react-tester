@@ -1,6 +1,6 @@
-export default function TestPage() {
+export default function ErrorPage() {
   tools.watch(t => t.job.title, {
-    reRender: false,
+    reRender: true,
     callback(value) {
       console.log('update', value);
     },

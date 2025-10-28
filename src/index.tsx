@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
+import { registerTools } from 'react-use-tools';
+import ErrorPage from './pages/error';
+import Tester from './pages';
 import createRoutes from './routes';
-import { RouterProvider } from 'react-router';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,10 +13,47 @@ const root = ReactDOM.createRoot(
 
 const router = createRoutes();
 
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Tester />} />
+      <Route path="/*" element={<ErrorPage />} />
+    </Routes>
+  )
+}
+
+function B() {
+  const [name, setName] = useState('John Soatra');
+  const [age, setAge] = useState(0);
+  const [job, setJob] = useState({ title: 'test' });
+  const navigate = useNavigate();
+
+  registerTools({
+    name,
+    setName: () => {
+      setName(n => n + '1');
+    },
+    get age() {
+      return age;
+    },
+    set age(v) {
+      setAge(v);
+    },
+    navigate,
+    job,
+    setJob(title) {
+      setJob({ title });
+    },
+  });
+
+  return null;
+}
+
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+    <BrowserRouter>
+      <B />
+      <App />
+    </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
