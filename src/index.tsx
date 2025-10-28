@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
-import { registerTools } from 'react-use-tools';
 import ErrorPage from './pages/error';
 import Tester from './pages';
 import createRoutes from './routes';
@@ -27,24 +26,6 @@ function B() {
   const [age, setAge] = useState(0);
   const [job, setJob] = useState({ title: 'test' });
   const navigate = useNavigate();
-
-  registerTools({
-    name,
-    setName: () => {
-      setName(n => n + '1');
-    },
-    get age() {
-      return age;
-    },
-    set age(v) {
-      setAge(v);
-    },
-    navigate,
-    job,
-    setJob(title) {
-      setJob({ title });
-    },
-  });
 
   return null;
 }
