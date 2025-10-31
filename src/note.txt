@@ -668,4 +668,385 @@ export default function Tester() {
     </div>
   );
 }
+------
+const prototype = Object.getPrototypeOf(target);
+      const descriptor = prototype && Object.getOwnPropertyDescriptor(prototype, key);
 
+      if (descriptor?.set && typeof descriptor.set === 'function') {
+        descriptor.set.call(target, value);
+        reRender();
+        return true;
+      }
+----------
+import { useEffect, useState } from "react";
+import useCurrent from "react-use-current";
+
+export default function ErrorPage() {
+  const { current, signal } = useCurrent({ job: { title: 'sdf' }, age: 0});
+  // const [current, setCurrent] = useState({ job: { title: 'sdf' } });
+  // const [tick, setSignal] = useState(0);
+  const [a, setA] = useState(0);
+
+  useEffect(() => {
+    console.log(current);
+  }, [signal]);
+
+  return (
+    <div>
+      <p>a = {a}</p>
+      <p>job = {current.job.title}</p>
+      <p>age = {current.age}</p>
+      <button onClick={async () => {
+        for (const i of [...new Array(100)].map((_, i) => i)) {
+          // const a = await new Promise((res) => {
+          //   setTimeout(() => {
+          //     res(1);
+          //   }, 1);
+          // });
+          // setA(a => a + 1);
+          current.job.title += i;
+          current.age = i;
+          // setCurrent(c => ({
+          //   ...c,
+          //   job: {
+          //     ...c.job,
+          //     title: c.job.title + a
+          //   }
+          // }));
+          // setSignal(tick + 1);
+        }
+      }}>Change</button>
+      {/* <p>a = {a.current}</p>
+      <button onClick={() => a.current ? a.current += 1 : a.current = 1}>change</button> */}
+    </div>
+  )
+}
+----
+
+import React from "react";
+import useCurrent from "react-use-current";
+
+export default function Dashboard() {
+  // initialize with nested reactive data
+  const data = useCurrent({
+    user: { name: "John", age: 25 },
+    tasks: [{ id: 1, title: "Setup project", done: false }],
+    settings: new Map([["theme", "light"]]),
+  });
+
+  // Reactively update nested data
+  const addTask = () => {
+    data.current.tasks.push({
+      id: Date.now(),
+      title: "New Task " + data.current.tasks.length,
+      done: false,
+    });
+  };
+
+  const toggleTheme = () => {
+    const theme = data.current.settings.get("theme") === "light" ? "dark" : "light";
+    data.current.settings.set("theme", theme);
+  };
+
+  const renameUser = () => {
+    data.current.user.name = prompt("Enter new name:", data.current.user.name) || data.current.user.name;
+  };
+
+  // re-render on every reactive change
+  const { signal } = data;
+
+  console.log('age = ', data.current);
+
+  return (
+    <div key={signal?.toString()}>
+      <h2>Dashboard</h2>
+
+      <section>
+        <h3>User Info</h3>
+        <p>Name: {data.current.user.name}</p>
+        <p>Age: {data.current.user.age}</p>
+        <button onClick={renameUser}>Rename User</button>
+      </section>
+
+      <section>
+        <h3>Tasks ({data.current.tasks.length})</h3>
+        <ul>
+          {data.current.tasks.map((t) => (
+            <li key={t.id}>
+              <input
+                type="checkbox"
+                checked={t.done}
+                onChange={() => {
+                  console.log(t);
+                  t.done = !t.done;
+                }}
+              />
+              {t.title}
+            </li>
+          ))}
+        </ul>
+        <button onClick={addTask}>Add Task</button>
+      </section>
+
+      <section>
+        <h3>Settings</h3>
+        <p>Theme: {data.current.settings.get("theme")}</p>
+        <button onClick={toggleTheme}>Toggle Theme</button>
+      </section>
+    </div>
+  );
+}
+---
+
+import React from "react";
+import useCurrent from "react-use-current";
+
+export default function Dashboard() {
+  // initialize with nested reactive data
+  const data = useCurrent({
+    user: { name: "John", age: 25 },
+    tasks: [{ id: 1, title: "Setup project", done: false }],
+    settings: new Map([["theme", "light"]]),
+  });
+
+  // Reactively update nested data
+  const addTask = () => {
+    data.current.tasks.push({
+      id: Date.now(),
+      title: "New Task " + data.current.tasks.length,
+      done: false,
+    });
+  };
+
+  const toggleTheme = () => {
+    const theme = data.current.settings.get("theme") === "light" ? "dark" : "light";
+    data.current.settings.set("theme", theme);
+  };
+
+  const renameUser = () => {
+    data.current.user.name = prompt("Enter new name:", data.current.user.name) || data.current.user.name;
+  };
+
+  // re-render on every reactive change
+  const { signal } = data;
+
+  console.log('age = ', data.current);
+
+  return (
+    <div key={signal?.toString()}>
+      <h2>Dashboard</h2>
+
+      <section>
+        <h3>User Info</h3>
+        <p>Name: {data.current.user.name}</p>
+        <p>Age: {data.current.user.age}</p>
+        <button onClick={renameUser}>Rename User</button>
+      </section>
+
+      <section>
+        <h3>Tasks ({data.current.tasks.length})</h3>
+        <ul>
+          {data.current.tasks.map((t) => (
+            <li key={t.id}>
+              <input
+                type="checkbox"
+                checked={t.done}
+                onChange={() => {
+                  console.log(t);
+                  t.done = !t.done;
+                }}
+              />
+              {t.title}
+            </li>
+          ))}
+        </ul>
+        <button onClick={addTask}>Add Task</button>
+      </section>
+
+      <section>
+        <h3>Settings</h3>
+        <p>Theme: {data.current.settings.get("theme")}</p>
+        <button onClick={toggleTheme}>Toggle Theme</button>
+      </section>
+    </div>
+  );
+}
+--------
+import { isCreatable } from "./utils";
+
+function accessingHandlers(target: any, options: {
+  createProxy: (value: any) => any;
+}): Record<string, Function> | undefined {
+  const instance = target.constructor;
+
+  function get(key: any) {
+    const result = target.get(key);
+
+    if (isCreatable(result)) {
+      return options.createProxy(result);
+    }
+
+    return result;
+  }
+  function list(...args: any[]) {
+
+  }
+
+  if (instance === Map || WeakMap || WeakSet) {
+
+
+    if (instance === Map) {
+      return {
+        get,
+      }
+    }
+  }
+  switch (target.constructor) {
+    case Map:
+    case WeakMap:
+    case WeakSet:
+      return {
+
+      }
+  }
+} new Map([
+  [Map, {
+    get: (target: Map<any, any>, key: any) => {
+      const result = target.get(key);
+
+      if (isCreatable(result)) {
+        return this.createProxy(result);
+      }
+
+      return result;
+    }
+  }]
+]);
+-------------------------------
+import { mutationMethod } from "./utils";
+
+export type ReRender = () => void;
+export type CacheProxy = WeakMap<any, any>;
+export type CacheShallow = WeakMap<any, any>;
+
+export default function createProxy<T extends Record<string, any>>(
+  content: T,
+  reRender: ReRender,
+  cacheProxy: CacheProxy,
+  cacheShallow: CacheShallow,
+) {
+  if (cacheProxy.has(content)) {
+    return cacheProxy.get(content);
+  };
+
+  const proxy = new Proxy(content, {
+    get(target, key, receiver) {
+      let value;
+
+      try {
+        value = Reflect.get(target, key, receiver);
+      } catch {
+        value = Reflect.get(target, key);
+      }
+
+      if (!(value === undefined || value === null)) {
+        if (Array.isArray(value)) {
+          let shallow;
+
+          if (cacheShallow.has(value)) {
+            shallow = cacheShallow.get(value);
+          } else {
+            shallow = [...value];
+            cacheShallow.set(value, shallow);
+          }
+
+          for (let i = 0; i < shallow.length; i++) {
+            const each = shallow[i];
+            if (!(each === undefined || each === null) && typeof each === 'object' && !cacheProxy.has(each)) {
+              const proxy = createProxy(each, reRender, cacheProxy, cacheShallow);
+              shallow[i] = proxy;
+              cacheProxy.set(proxy, proxy);
+            }
+          }
+
+          return createProxy(shallow, reRender, cacheProxy, cacheShallow);
+        } else if (typeof value === 'object') {
+          return createProxy(value, reRender, cacheProxy, cacheShallow);
+        } else if (typeof value === 'function') {
+          if (typeof key === 'string' && mutationMethod(target, key)) {
+            return function (...args: any[]) {
+              const result = (target as any)[key](...args);
+              reRender();
+              return result === target ? proxy : result;
+            }
+          }
+
+          return (value as Function).bind(target);
+        }
+      }
+
+      return value;
+    },
+    set(target, key, value, receiver) {
+      const currentValue = (target as any)[key];
+      const result = Reflect.set(target, key, value, receiver);
+
+      if (currentValue !== value && result) {
+        reRender();
+      };
+
+      return result;
+    },
+    deleteProperty(target, key) {
+      const hadKey = Object.prototype.hasOwnProperty.call(target, key);
+      const result = Reflect.deleteProperty(target, key);
+
+      if (hadKey && result) {
+        reRender();
+      };
+
+      return result;
+    }
+  });
+
+  cacheProxy.set(content, proxy);
+
+  return proxy;
+}
+----------
+import createProxy from "./createProxy";
+
+export default class ProxyCreator<T extends Record<string, any>> {
+  private content;
+  private reRender;
+  private cacheProxy;
+  private cacheShallow;
+
+  constructor(content: T, renRender: () => void, cacheProxy: WeakMap<any, any>, cacheShallow: WeakMap<any, any>) {
+    this.content = content;
+    this.reRender = renRender;
+    this.cacheProxy = cacheProxy;
+    this.cacheShallow = cacheShallow;
+  }
+
+  private createProxy<T extends Record<string, any>>(content: T) {
+    return createProxy(
+      content,
+      this.reRender,
+      this.cacheProxy,
+      this.cacheShallow
+    );
+  }
+
+  start() {
+    return this.createProxy(this.content);
+  }
+}
+----
+<button onClick={() => {
+        const entries = data.current.map.entries();
+        // entries.next();
+        const dog = entries.next().value;
+        (dog as any)[1].name = 'test';
+        // console.log(dog);
+      }}>change</button>
