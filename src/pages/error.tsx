@@ -1,21 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useCurrent from "react-use-current";
 
+let a = Symbol();
+
 export default function ErrorPage() {
-  const { current: { job }, signal } = useCurrent({ job: { title: 'sdf' } });
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    console.log(job);
-  }, [signal]);
+    console.log('a change = ', a);
+  }, [a]);
 
   return (
     <div>
-      <p>job = {job.title}</p>
-      <button onClick={() => {
-        job.title += '1';
-      }}>Change</button>
-      {/* <p>a = {a.current}</p>
-      <button onClick={() => a.current ? a.current += 1 : a.current = 1}>change</button> */}
+      <p>a = {a.description}</p>
+      <button onClick={() => {a = Symbol(); setCount(c => c + 1)}}>Change</button>
     </div>
   )
 }

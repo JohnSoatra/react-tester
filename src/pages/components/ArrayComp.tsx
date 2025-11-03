@@ -10,8 +10,8 @@ export default function ArrayComp({ data }: Props) {
   return (
     <div>
       <h4>Array</h4>
-      <p>{data.current.arr.join(", ")}</p>
-      <button onClick={() => data.current.arr.push(Math.random())}>Mutate Array</button>
+      <p>{data.value.arr.join(", ")}</p>
+      <button onClick={() => data.value.arr.push(Math.random())}>Mutate Array</button>
     </div>
   );
 }

@@ -10,8 +10,8 @@ export default function MapComp({ data }: Props) {
   return (
     <div>
       <h4>Map</h4>
-      <p>{data.current.map.get("a")}</p>
-      <button onClick={() => data.current.map.set("a", Math.random())}>Mutate Map</button>
+      <p>{data.value.map.get("a")}</p>
+      <button onClick={() => data.value.map.set("a", Math.random())}>Mutate Map</button>
     </div>
   );
 }

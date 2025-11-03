@@ -10,8 +10,8 @@ export default function SetComp({ data }: Props) {
   return (
     <div>
       <h4>Set</h4>
-      <p>Size: {data.current.set.size}</p>
-      <button onClick={() => data.current.set.add(Math.random())}>Mutate Set</button>
+      <p>Size: {data.value.set.size}</p>
+      <button onClick={() => data.value.set.add(Math.random())}>Mutate Set</button>
     </div>
   );
 }

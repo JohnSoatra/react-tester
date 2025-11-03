@@ -10,9 +10,9 @@ export default function DateComp({ data }: Props) {
   return (
     <div>
       <h4>Date</h4>
-      <p>{data.current.date.toLocaleTimeString()}</p>
-      <button onClick={() => data.current.date.setSeconds(data.current.date.getSeconds() + 5)}>+5 seconds</button>
-      <button onClick={() => (data.current.date = new Date())}>Reset Date</button>
+      <p>{data.value.date.toLocaleTimeString()}</p>
+      <button onClick={() => data.value.date.setSeconds(data.value.date.getSeconds() + 5)}>+5 seconds</button>
+      <button onClick={() => (data.value.date = new Date())}>Reset Date</button>
     </div>
   );
 }

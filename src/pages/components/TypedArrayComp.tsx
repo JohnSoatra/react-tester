@@ -10,10 +10,10 @@ export default function TypedArrayComp({ data }: Props) {
   return (
     <div>
       <h4>TypedArray</h4>
-      <p>{data.current.typedArray.join(", ")}</p>
+      <p>{data.value.typedArray.join(", ")}</p>
       <button
         onClick={() =>
-          data.current.typedArray.set([Math.random(), Math.random(), Math.random()])
+          data.value.typedArray.set([Math.random(), Math.random(), Math.random()])
         }
       >
         Mutate TypedArray
