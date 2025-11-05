@@ -152,15 +152,15 @@ function useAccept(props: { name: string, age: number }) {
   const funs = useFun(props);
 
   function print() {
-    // console.log(funRef.current);
-    console.log(propsRef.current);
+    // console.log(funRef.value);
+    console.log(propsRef.value);
   }
 
   useEffect(() => {
     // console.log('changes = ', fun, props);
     // console.log('changes = ', props);
-    // funRef.current = fun;
-    propsRef.current = props;
+    // funRef.value = fun;
+    propsRef.value = props;
   }, [props]);
 
   return {
@@ -207,8 +207,8 @@ function useAccept(props: { name: string, age: number }) {
 
 
   function print() {
-    // console.log(funRef.current);
-    // console.log(propsRef.current);
+    // console.log(funRef.value);
+    // console.log(propsRef.value);
 
     console.log(fun.funAge());
     console.log(fun.funName);
@@ -217,8 +217,8 @@ function useAccept(props: { name: string, age: number }) {
   useEffect(() => {
     // console.log('changes = ', fun, props);
     // console.log('changes = ', props);
-    // funRef.current = fun;
-    propsRef.current = props;
+    // funRef.value = fun;
+    propsRef.value = props;
   }, [props]);
 
   return {
@@ -499,8 +499,8 @@ function useCurrent<T>(initial?: T): Current<T | undefined> {
   const timeout = useRef<NodeJS.Timeout>(undefined);
   
   const reRender = useCallback(() => {
-    clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => {
+    clearTimeout(timeout.value);
+    timeout.value = setTimeout(() => {
       setStateCurrent({ ...initialCurrent });
     }, 10);
   }, []);
@@ -539,8 +539,8 @@ function useCurrent<T>(initial?: T): Current<T | undefined> {
   const [state, setState] = useState<Current<T | undefined>>();
   
   const reRender = useCallback(() => {
-    clearTimeout(timeout.current);
-    timeout.current = setTimeout(() => {
+    clearTimeout(timeout.value);
+    timeout.value = setTimeout(() => {
       setState(prev => structuredClone(prev));
     }, 25);
   }, []);
@@ -555,7 +555,7 @@ function useCurrent<T>(initial?: T): Current<T | undefined> {
 export default useCurrent;
 --------
 // console.log('sdf');
-        // a.current.set(g, 'sdf')
+        // a.value.set(g, 'sdf')
         // console.log(a.p.push(1));
         // a.p[0] = 2;
         // b.p.name += '111';
@@ -585,9 +585,9 @@ export default function Tester() {
 
   return (
     <div>
-      <p>a = {b.current.score}</p>
+      <p>a = {b.value.score}</p>
       <button onClick={() => {
-        b.current.score.push(1);
+        b.value.score.push(1);
       }}>change</button>
     </div>
   );
@@ -612,9 +612,9 @@ export default function Tester() {
 
   return (
     <div>
-      <p>a = {b.current.score}</p>
+      <p>a = {b.value.score}</p>
       <button onClick={() => {
-        b.current.score.push(1);
+        b.value.score.push(1);
       }}>change</button>
     </div>
   );
@@ -645,26 +645,26 @@ export default function Tester() {
 
   return (
     <div>
-      {/* <p>state = {state.current.score}</p> */}
-      <p>job = {state.current.name}</p>
-      <p>score = {state.current.score}</p>
+      {/* <p>state = {state.value.score}</p> */}
+      <p>job = {state.value.name}</p>
+      <p>score = {state.value.score}</p>
       <button onClick={() => {
         // setState(a => a + 1);
-        state.current.name += '1';
-        state.current.score.push(1);
+        state.value.name += '1';
+        state.value.score.push(1);
         // g.name += '3'
         // setState(a => a + 1);
-        // state.current.job.year += 1;
+        // state.value.job.year += 1;
         // setState(a => a + 1);
       }}>change</button>
-      {/* <p>a = {b.current.score}</p>
-      <p>name = {b.current.job.year}</p>
-      <p>bb = {b.current.b.test}</p>
+      {/* <p>a = {b.value.score}</p>
+      <p>name = {b.value.job.year}</p>
+      <p>bb = {b.value.b.test}</p>
       <button onClick={() => {
-        b.current.score.push(1);
+        b.value.score.push(1);
       }}>change</button>
       <br /> */}
-      {/* <button onClick={() => b.current.job.year += 3}>change job</button> */}
+      {/* <button onClick={() => b.value.job.year += 3}>change job</button> */}
     </div>
   );
 }
@@ -716,8 +716,8 @@ export default function ErrorPage() {
           // setSignal(tick + 1);
         }
       }}>Change</button>
-      {/* <p>a = {a.current}</p>
-      <button onClick={() => a.current ? a.current += 1 : a.current = 1}>change</button> */}
+      {/* <p>a = {a.value}</p>
+      <button onClick={() => a.value ? a.value += 1 : a.value = 1}>change</button> */}
     </div>
   )
 }
@@ -736,26 +736,26 @@ export default function Dashboard() {
 
   // Reactively update nested data
   const addTask = () => {
-    data.current.tasks.push({
+    data.value.tasks.push({
       id: Date.now(),
-      title: "New Task " + data.current.tasks.length,
+      title: "New Task " + data.value.tasks.length,
       done: false,
     });
   };
 
   const toggleTheme = () => {
-    const theme = data.current.settings.get("theme") === "light" ? "dark" : "light";
-    data.current.settings.set("theme", theme);
+    const theme = data.value.settings.get("theme") === "light" ? "dark" : "light";
+    data.value.settings.set("theme", theme);
   };
 
   const renameUser = () => {
-    data.current.user.name = prompt("Enter new name:", data.current.user.name) || data.current.user.name;
+    data.value.user.name = prompt("Enter new name:", data.value.user.name) || data.value.user.name;
   };
 
   // re-render on every reactive change
   const { signal } = data;
 
-  console.log('age = ', data.current);
+  console.log('age = ', data.value);
 
   return (
     <div key={signal?.toString()}>
@@ -763,15 +763,15 @@ export default function Dashboard() {
 
       <section>
         <h3>User Info</h3>
-        <p>Name: {data.current.user.name}</p>
-        <p>Age: {data.current.user.age}</p>
+        <p>Name: {data.value.user.name}</p>
+        <p>Age: {data.value.user.age}</p>
         <button onClick={renameUser}>Rename User</button>
       </section>
 
       <section>
-        <h3>Tasks ({data.current.tasks.length})</h3>
+        <h3>Tasks ({data.value.tasks.length})</h3>
         <ul>
-          {data.current.tasks.map((t) => (
+          {data.value.tasks.map((t) => (
             <li key={t.id}>
               <input
                 type="checkbox"
@@ -790,7 +790,7 @@ export default function Dashboard() {
 
       <section>
         <h3>Settings</h3>
-        <p>Theme: {data.current.settings.get("theme")}</p>
+        <p>Theme: {data.value.settings.get("theme")}</p>
         <button onClick={toggleTheme}>Toggle Theme</button>
       </section>
     </div>
@@ -811,26 +811,26 @@ export default function Dashboard() {
 
   // Reactively update nested data
   const addTask = () => {
-    data.current.tasks.push({
+    data.value.tasks.push({
       id: Date.now(),
-      title: "New Task " + data.current.tasks.length,
+      title: "New Task " + data.value.tasks.length,
       done: false,
     });
   };
 
   const toggleTheme = () => {
-    const theme = data.current.settings.get("theme") === "light" ? "dark" : "light";
-    data.current.settings.set("theme", theme);
+    const theme = data.value.settings.get("theme") === "light" ? "dark" : "light";
+    data.value.settings.set("theme", theme);
   };
 
   const renameUser = () => {
-    data.current.user.name = prompt("Enter new name:", data.current.user.name) || data.current.user.name;
+    data.value.user.name = prompt("Enter new name:", data.value.user.name) || data.value.user.name;
   };
 
   // re-render on every reactive change
   const { signal } = data;
 
-  console.log('age = ', data.current);
+  console.log('age = ', data.value);
 
   return (
     <div key={signal?.toString()}>
@@ -838,15 +838,15 @@ export default function Dashboard() {
 
       <section>
         <h3>User Info</h3>
-        <p>Name: {data.current.user.name}</p>
-        <p>Age: {data.current.user.age}</p>
+        <p>Name: {data.value.user.name}</p>
+        <p>Age: {data.value.user.age}</p>
         <button onClick={renameUser}>Rename User</button>
       </section>
 
       <section>
-        <h3>Tasks ({data.current.tasks.length})</h3>
+        <h3>Tasks ({data.value.tasks.length})</h3>
         <ul>
-          {data.current.tasks.map((t) => (
+          {data.value.tasks.map((t) => (
             <li key={t.id}>
               <input
                 type="checkbox"
@@ -865,7 +865,7 @@ export default function Dashboard() {
 
       <section>
         <h3>Settings</h3>
-        <p>Theme: {data.current.settings.get("theme")}</p>
+        <p>Theme: {data.value.settings.get("theme")}</p>
         <button onClick={toggleTheme}>Toggle Theme</button>
       </section>
     </div>
@@ -1044,7 +1044,7 @@ export default class ProxyCreator<T extends Record<string, any>> {
 }
 ----
 <button onClick={() => {
-        const entries = data.current.map.entries();
+        const entries = data.value.map.entries();
         // entries.next();
         const dog = entries.next().value;
         (dog as any)[1].name = 'test';
@@ -1079,6 +1079,8 @@ const g = {}
 export default function DeepTester() {
   const data = useCurrent({
     // arr: [1, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3],
+--------------
+// arr: [1, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3, 2, 3, 1, 2, 3],
     // map: new Map([['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42], ['key', 42]]),
     // set: new Set([1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,'2d']),
     // nested: {
@@ -1395,3 +1397,99 @@ export default function DeepTester() {
   //     onChange(props);
   //   }
   // }
+------------
+ else if (
+              key === 'get' &&
+              (target instanceof Map || target instanceof Set)
+            ) {
+              return function (getKey: any) {
+                return getHandler(target as any, getKey, reRender, cacheProxy, cacheShallow);
+              }
+            } else if (
+              key === 'has' &&
+              (target instanceof Map || target instanceof Set || target instanceof WeakMap || target instanceof WeakSet)
+            ) {
+              return function (item: any) {
+                return hasHandler(target as any, item, reRender, cacheProxy, cacheShallow);
+              }
+            }
+-----------
+export function createShallow<T extends object>(base: T, initial: T, cacheShallow: CacheShallow)  {
+  let shallow: T;
+
+  if (cacheShallow.has(base)) {
+    shallow = cacheShallow.get(base);
+  } else {
+    shallow = initial;
+    cacheShallow.set(base, shallow);
+  }
+
+  return shallow;
+}
+-----------
+export function iterable(value: any) {
+  return value != null && typeof value[Symbol.iterator] === 'function';
+}
+--------
+export function reactiveInstance(value: any) {
+  return MutationMethods.get(value.constructor) ? true : false;
+}
+--------
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router';
+import ErrorPage from './pages/error';
+import Tester from './pages';
+import createRoutes from './routes';
+import App from './App';
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+
+const router = createRoutes();
+
+// function App() {
+//   return (
+//     <Routes>
+//       <Route path="/" element={<Tester />} />
+//       <Route path="/*" element={<ErrorPage />} />
+//     </Routes>
+//   )
+// }
+
+function B() {
+  const [name, setName] = useState('John Soatra');
+  const [age, setAge] = useState(0);
+  const [job, setJob] = useState({ title: 'test' });
+  const navigate = useNavigate();
+
+  return null;
+}
+
+root.render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+--
+export type OptionalCurrent<T> = {
+  get current(): T | undefined;
+  set current(value: T | undefined);
+  readonly signal: Symbol | undefined;
+}
+----------
+createProxy(packet, reRender, cacheProxy, cacheShallow), {
+      get(target, key, receiver) {
+        if (key === Signal) {
+          return signalRef.value;
+        }
+        return Reflect.get(target, key, receiver);
+      },
+    }

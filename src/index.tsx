@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import './assets/globals.css';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import App from './src/App';
