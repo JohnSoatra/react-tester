@@ -1,5 +1,5 @@
 import React, { JSX, useEffect } from 'react';
-import useCurrent, { Updated } from 'react-use-current';
+import useCurrent, {  } from 'react-use-current';
 import NewPostForm from './components/NewPostForm';
 import Post from './components/Post';
 import { fetchJson } from './utils/fetchWithFallback';
