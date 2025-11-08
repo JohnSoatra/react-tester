@@ -1,0 +1,14 @@
+{
+  "name": "tmdb-app",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
+    "react-use-current": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
+}
