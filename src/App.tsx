@@ -1,55 +1,51 @@
 import React, { useEffect } from "react";
-import useCurrent from "react-use-current";
-
+import useCurrent, { Updated } from "react-use-current";
+class Person {
+  name?: string;
+  age?: number;
+  public test(this: any) {
+    console.log(this);
+    this.age = 20;
+  }
+}
+const instance = new Person();
+// console.log(Object.keys(instance));
+const g = {
+  name: 'test',
+  update() {
+    this.name += '1'
+  }
+  }
 export default function App() {
-  const down = useCurrent(false);
-  const person = useCurrent<{name: string, job?: { year: number }}>()
-  // const coordinate = useCurrent({ x: 100, y: 0 });
-  // const offset = useCurrent({ x: 0, y: 0 });
+  const obj = useCurrent(g);
 
   useEffect(() => {
-    const handleMouseMove = (evt: MouseEvent) => {
-      if (!down.value) return;
-      // coordinate.value = {
-      //   x: evt.clientX - offset.value.x,
-      //   y: evt.clientY - offset.value.y,
-      // };
-    };
-
-    const handleMouseUp = () => (down.value = false);
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, []);
-
-  useEffect(() => { person.value = {
-    name: 'sdf', job: { year: 200 }
-  } }, [])
-
+    console.log('changed', obj.value);
+  }, [obj[Updated]])
   return (
-    <div className="bg-gray-200 p-[20px] min-h-[300px] relative">
-      <p>coordinate = {person.value?.name}</p>
-      <p>job year = {person.value?.job?.year}</p>
-      {/* <div
-        className="bg-red-600 size-[100px] rounded"
-        style={{
-          position: "absolute",
-          left: coordinate.value.x,
-          top: coordinate.value.y,
-        }}
-        onMouseDown={(evt) => {
-          down.value = true;
-          const rect = evt.currentTarget.getBoundingClientRect();
-          offset.value = {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top,
-          };
-        }}
-      /> */}
+    <div>
+      <p>Date = {JSON.stringify(obj.value)}</p>
+      <button onClick={() => {
+        obj.value.update.apply(new Proxy(obj.value, {}))
+        // const a = obj.value.getTime.apply(new Proxy(new Date(), {}));
+        // console.log(a);
+        // obj.value.update()
+        // obj.value.getDate.apply(new Date())
+        // const s = obj.value.test.apply(obj.value);
+        // console.log(obj.value);
+        // fn.apply(obj.value)
+        // class Person {
+        //   name?: string;
+        //   age?: number;
+        //   test(this: any) {
+        //     console.log(this);
+        //     this.age = 20;
+        //   }
+        // }
+        // const person = new Person();
+        // const fn = person.test;
+        // fn.apply(null);
+      }}>Change</button>
     </div>
-  );
+  )
 }

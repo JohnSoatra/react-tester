@@ -2,7 +2,7 @@ import './assets/globals.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import App from './tmdb-app/src/App';
+import App from './App';
 import './assets/global.css'
 
 const root = ReactDOM.createRoot(
